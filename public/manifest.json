@@ -1,19 +1,25 @@
 {
   "manifest_version": 2,
-  "name": "Extension Name",
+  "name": "Goodreads PriceFinder",
   "version": "0.1",
   "description": "Some Description",
-  "permissions": [
-  ],
+  "permissions": [],
   "background": {
-    "scripts": ["static/js/background.js"]
-  },
-  "content_scripts": [{
-    "js": [ "static/js/content.js" ],
-    "matches": [
-      "http://*.example.com/*", "https://*.example.com/*"
+    "scripts": [
+      "static/js/background.js"
     ]
-  }],
+  },
+  "content_scripts": [
+    {
+      "js": [
+        "static/js/content.js"
+      ],
+      "matches": [
+        "http://goodreads.com/*",
+        "https://goodreads.com/*"
+      ]
+    }
+  ],
   "icons": {
     "192": "logo192.png"
   },
