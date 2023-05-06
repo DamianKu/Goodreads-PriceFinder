@@ -15,8 +15,8 @@
         "static/js/content.js"
       ],
       "matches": [
-        "http://goodreads.com/*",
-        "https://goodreads.com/*"
+        "http://www.goodreads.com/*",
+        "https://www.goodreads.com/*"
       ]
     }
   ],
