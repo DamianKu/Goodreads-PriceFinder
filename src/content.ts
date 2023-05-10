@@ -1,3 +1,5 @@
+import { BookData } from "./types";
+
 const table = document.querySelector('#books')!; // TODO deal with non existing #books
 
 const priceHeader = insertPriceCell(table.querySelector<HTMLTableRowElement>('#booksHeader')!); // TODO deal with non existing #booksHeader
@@ -21,7 +23,20 @@ function handleBookRow(node: HTMLTableRowElement) {
   const price = insertPriceCell(node);
   price.classList.add('field');
   price.innerHTML = "..."; // TODO use spinner?
-  chrome.runtime.sendMessage('ISBN/ISBN13/ASIN/or what?', bookPrice => price.innerHTML = bookPrice);
+
+  const bookData: BookData = {
+    author: getBookDataValue(node, 'author')!.replace(/[\n*]/g, '').trim(),
+    title: getBookDataValue(node, 'title')!,
+    asin: getBookDataValue(node, 'asin'),
+    isbn: getBookDataValue(node, 'isbn'),
+    isbn13: getBookDataValue(node, 'isbn13'),
+  }
+
+  chrome.runtime.sendMessage(bookData, bookPrice => price.innerHTML = bookPrice);
+}
+
+function getBookDataValue(node: HTMLElement, key: keyof BookData): string | null {
+  return node.querySelector(`.${key} .value`)?.textContent?.trim() || null;
 }
 
 
