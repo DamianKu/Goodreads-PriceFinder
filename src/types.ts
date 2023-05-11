@@ -4,4 +4,4 @@ export interface BookData {
   isbn13: string | null;
   author: string;
   title: string;
-};
+}

@@ -1,2 +1,2 @@
 console.log('Hello Background');
-export {}
+export {};

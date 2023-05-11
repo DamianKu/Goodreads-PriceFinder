@@ -1,4 +1,4 @@
-import { BookData } from "./types";
+import { BookData } from './types';
 
 const table = document.querySelector('#books')!; // TODO deal with non existing #books
 
@@ -8,12 +8,12 @@ priceHeader.outerHTML = '<th class="header field">price</th>';
 [...table.querySelectorAll<HTMLTableRowElement>('.bookalike')].forEach(row => handleBookRow(row));
 
 new MutationObserver(mutations => {
-  for (let { target, addedNodes: [node] } of mutations) {
+  for (let {target, addedNodes: [node]} of mutations) {
     if ((target as HTMLElement).tagName !== 'TBODY' || node.nodeType !== document.ELEMENT_NODE) continue;
 
     handleBookRow(node as HTMLTableRowElement);
   }
-}).observe(table, { childList: true, subtree: true });
+}).observe(table, {childList: true, subtree: true});
 
 function insertPriceCell(node: HTMLTableRowElement) {
   return node.insertCell(node.childElementCount - 1);
@@ -22,7 +22,7 @@ function insertPriceCell(node: HTMLTableRowElement) {
 function handleBookRow(node: HTMLTableRowElement) {
   const price = insertPriceCell(node);
   price.classList.add('field');
-  price.innerHTML = "..."; // TODO use spinner?
+  price.innerHTML = '...'; // TODO use spinner?
 
   const bookData: BookData = {
     author: getBookDataValue(node, 'author')!.replace(/[\n*]/g, '').trim(),
@@ -30,7 +30,7 @@ function handleBookRow(node: HTMLTableRowElement) {
     asin: getBookDataValue(node, 'asin'),
     isbn: getBookDataValue(node, 'isbn'),
     isbn13: getBookDataValue(node, 'isbn13'),
-  }
+  };
 
   chrome.runtime.sendMessage(bookData, bookPrice => price.innerHTML = bookPrice);
 }
@@ -40,4 +40,4 @@ function getBookDataValue(node: HTMLElement, key: keyof BookData): string | null
 }
 
 
-export { }
+export {};
