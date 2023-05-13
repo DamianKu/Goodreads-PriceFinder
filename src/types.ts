@@ -5,3 +5,9 @@ export interface Book {
   author: string;
   title: string;
 }
+
+export interface CacheEntry {
+  book: Book,
+  price: string,
+  cachedAt: number,
+}
