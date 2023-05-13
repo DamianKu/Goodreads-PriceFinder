@@ -3,7 +3,10 @@
   "name": "Goodreads PriceFinder",
   "version": "0.1",
   "description": "Some Description",
-  "permissions": [],
+  "permissions": [
+    "*://*/*",
+    "storage"
+  ],
   "background": {
     "scripts": [
       "static/js/background.js"
