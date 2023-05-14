@@ -59,9 +59,8 @@ async function findBookPrice(book: Book): Promise<string> {
   return 'Not found';
 }
 
-function isValidCache(cache: CacheEntry): cache is CacheEntry {
-  // TODO
-  return !!cache;
+function isValidCache(cache: CacheEntry | undefined): cache is CacheEntry {
+  return !!cache && cache.cachedAt > Date.now() - CACHE_TTL;
 }
 
 function isValidPrice(price: string | undefined): price is string {
@@ -98,7 +97,7 @@ function bookKey(book: Book): string {
   return book.asin || book.isbn || book.author + book.title; // use uuid for author and title or for everything?
 }
 
-async function getCachedPrice(book: Book): Promise<CacheEntry> {
+async function getCachedPrice(book: Book): Promise<CacheEntry | undefined> {
   const key = bookKey(book);
   return new Promise(resolve => {
     chrome.storage.local.get(key, result => {
