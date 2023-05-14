@@ -7,6 +7,8 @@ const GET_SEARCH_URL = ({author, title}: Book) => {
   return `${BASE_AMAZON_URL}/s/?search-alias=stripbooks&field-author=${encodeURIComponent(author)}&field-title=${encodeURIComponent(title)}`;
 };
 
+const CACHE_TTL = 24 * 60 * 60 * 1000; //24hours in ms
+
 chrome.runtime.onMessage.addListener((book: Book, _, sendResponse) => {
   (async () => {
     const cached = await getCachedPrice(book);
