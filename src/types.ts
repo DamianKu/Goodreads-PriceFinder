@@ -6,8 +6,14 @@ export interface Book {
   title: string;
 }
 
+type BookFormat = 'Kindle Edition' | 'Hardcover' | 'Audio CD' | 'Audiobook' | 'Paperback' | 'Spiral-bound';
+
+export type Price = {
+  [key in BookFormat]?: string;
+}
+
 export interface CacheEntry {
   book: Book,
-  price: string,
+  price: Price,
   cachedAt: number,
 }
