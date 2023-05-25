@@ -1,5 +1,5 @@
 import { Book, Price } from './types';
-import { cachePrice, getCachedPrice } from './views/cache/cache';
+import { cachePrice, getCachedPrice } from './cache/cache';
 
 const BASE_AMAZON_URL = 'https://www.amazon.co.uk';
 

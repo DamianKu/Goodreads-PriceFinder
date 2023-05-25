@@ -1,4 +1,4 @@
-import { Book, CacheEntry, Price } from '../../types';
+import { Book, CacheEntry, Price } from '../types';
 
 // TODO Increase to what? 3 - 7 days?
 const CACHE_TTL = 24 * 60 * 60 * 1000; //24hours in ms
