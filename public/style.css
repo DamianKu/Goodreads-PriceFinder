@@ -1,0 +1,68 @@
+.gpf-value {
+    display: flex;
+    gap: 8px;
+}
+
+.gpf-label {
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+    border: 1px solid #d8d8d8;
+    background: #f4f1ea;
+    border-radius: 4px 4px 0 0;
+    margin-bottom: -1px;
+    padding: 1px 3px;
+}
+
+.gpf-prices {
+    overflow: hidden;
+}
+
+.gpf-prices-input {
+    display: none;
+}
+
+.gpf-prices-input:checked ~ .gpf-prices-boxes {
+    max-height: 500px;
+}
+
+.gpf-prices-boxes {
+    max-height: 0;
+    transition: all 0.3s ease;
+}
+
+.gpf-prices-list ul {
+    background: #f4f1ea;
+    border: 1px solid #d8d8d8;
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+    border-radius: 4px 0 4px 4px;
+}
+
+.gpf-prices-list ul li:not(:last-child) {
+    border-bottom: 1px solid #d8d8d8;
+}
+
+.gpf-prices-list ul li a {
+    padding: 4px;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    text-decoration: none;
+    color: black;
+}
+
+.gpf-prices-list ul li a:hover {
+    box-shadow: 0 0 5px 3px #d8d8d8;
+}
+
+.gpf-prices-list ul li a span:first-of-type {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.gpf-prices-list li a span:last-of-type {
+    font-size: 12px;
+}

@@ -17,6 +17,7 @@
       "js": [
         "static/js/content.js"
       ],
+      "css": ["./style.css"],
       "matches": [
         "http://www.goodreads.com/*",
         "https://www.goodreads.com/*"
