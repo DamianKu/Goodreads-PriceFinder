@@ -13,8 +13,7 @@ chrome.runtime.onMessage.addListener((book: Book, _, sendResponse) => {
   (async () => {
     const cached = await getCachedPrice(book);
     if (cached) {
-      // TODO send whole price
-      sendResponse(cached.price.Paperback || cached.price.Hardcover || 'Other');
+      sendResponse(cached.price);
       return;
     }
 
@@ -25,15 +24,17 @@ chrome.runtime.onMessage.addListener((book: Book, _, sendResponse) => {
     try {
       const price = await findBookPrice(book);
       if (price) {
-        // TODO send whole price
-        sendResponse(price.Paperback || price.Hardcover || 'Other');
+        sendResponse(price);
         await cachePrice(book, price);
       } else {
-        sendResponse('Not Found');
+        // TODO
+        // sendResponse(null);
       }
     } catch (e) {
       console.error('Throttled?');
       console.error(e);
+      // TODO
+      // sendResponse(null);
     }
   })();
 
