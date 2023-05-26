@@ -1,4 +1,4 @@
-import { Book, Price } from './types';
+import { Book, Prices } from './types';
 
 const table = document.querySelector('#books')!; // TODO deal with non existing #books
 
@@ -32,24 +32,24 @@ function handleBookRow(node: HTMLTableRowElement) {
     isbn13: getBookValue(node, 'isbn13'),
   };
 
-  chrome.runtime.sendMessage(book, (bookPrice: Price) => {
-    const prices = Object.entries(bookPrice).map(([type, price]) => `<li><a href='/'><span>${price}</span><span>${type}</span></a></li>`).reduce((acc, cur) => acc + cur, '');
+  chrome.runtime.sendMessage(book, (prices: Prices) => {
+    const pricesList = prices.reduce((acc, p) => acc + `<li><a href='${p.url}'><span>${p.value}</span><span>${p.format}</span></a></li>`, '');
     price.innerHTML = `
     <label>price</label>
     <div class="value">
       <div class="gpf-value">
-        <a href="/">${bookPrice.Paperback || bookPrice.Hardcover}</a>
+        <a href="${prices[0].url}">${prices[0].value}</a>
         <label class="gpf-label" for="${book.title}" title="More buy options">&#128722;</label>
       </div>
       <div class="gpf-prices">
         <input class="gpf-prices-input" type="checkbox" id="${book.title}">
         <div class="gpf-prices-boxes">
           <div class="gpf-prices-list">
-            <ul>${prices}</ul>
+            <ul>${pricesList}</ul>
           </div>
         </div>
       </div>
-    </div>`
+    </div>`;
   });
 }
 

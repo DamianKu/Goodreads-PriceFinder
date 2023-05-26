@@ -6,14 +6,17 @@ export interface Book {
   title: string;
 }
 
-type BookFormat = 'Kindle Edition' | 'Hardcover' | 'Audio CD' | 'Audiobook' | 'Paperback' | 'Spiral-bound';
+// TODO - does it make sense?
+export type BookFormat = 'Kindle Edition' | 'Hardcover' | 'Audio CD' | 'Audiobook' | 'Paperback' | 'Spiral-bound';
 
-export type Price = {
-  [key in BookFormat]?: string;
-}
+export type Prices = {
+  format: BookFormat,
+  url: string,
+  value: string
+}[];
 
 export interface CacheEntry {
   book: Book,
-  price: Price,
+  prices: Prices,
   cachedAt: number,
 }

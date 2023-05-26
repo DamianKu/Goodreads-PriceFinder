@@ -1,5 +1,5 @@
-import { Book, Price } from './types';
 import { cachePrice, getCachedPrice } from './cache/cache';
+import { Book, BookFormat, Prices } from './types';
 
 const BASE_AMAZON_URL = 'https://www.amazon.co.uk';
 
@@ -13,7 +13,7 @@ chrome.runtime.onMessage.addListener((book: Book, _, sendResponse) => {
   (async () => {
     const cached = await getCachedPrice(book);
     if (cached) {
-      sendResponse(cached.price);
+      sendResponse(cached.prices);
       return;
     }
 
@@ -41,18 +41,18 @@ chrome.runtime.onMessage.addListener((book: Book, _, sendResponse) => {
   return true; // allow async sendResponse
 });
 
-async function findBookPrice(book: Book): Promise<Price | null> {
+async function findBookPrice(book: Book): Promise<Prices | null> {
   if (book.asin) {
-    const price = await retrievePrice(GET_PRODUCT_URL(book.asin));
-    if (isValidPrice(price)) {
+    const price = await retrievePrices(GET_PRODUCT_URL(book.asin));
+    if (price?.length) {
       return price;
     }
   }
 
   // Sometimes isbn is the same as asin, in that case do not make this request
   if (book.isbn && book.isbn !== book.asin) {
-    const price = await retrievePrice(GET_PRODUCT_URL(book.isbn));
-    if (isValidPrice(price)) {
+    const price = await retrievePrices(GET_PRODUCT_URL(book.isbn));
+    if (price?.length) {
       return price;
     }
   }
@@ -63,8 +63,8 @@ async function findBookPrice(book: Book): Promise<Price | null> {
   const firstBookUrl = getFirstSearchResultUrl(searchHtml);
 
   if (firstBookUrl) {
-    const price = await retrievePrice(firstBookUrl);
-    if (isValidPrice(price)) {
+    const price = await retrievePrices(firstBookUrl);
+    if (price?.length) {
       return price;
     }
   }
@@ -73,13 +73,7 @@ async function findBookPrice(book: Book): Promise<Price | null> {
   return null;
 }
 
-function isValidPrice(price: Price | undefined): price is Price {
-  // TODO
-  // What else I can do?
-  return Object.entries(price || {}).length > 0;
-}
-
-async function retrievePrice(url: string): Promise<Price | undefined> {
+async function retrievePrices(url: string): Promise<Prices | undefined> {
   const atLeastOneNumberRegex = /\d/;
   const html = await fetchHtml(url);
 
@@ -89,14 +83,24 @@ async function retrievePrice(url: string): Promise<Price | undefined> {
         .replace(/\s.*/g, ''); // Sometimes retrieved HTML with price will contain extra styling
   }
 
-  return [...html.querySelectorAll('#formats .format')]
-      .map(formatBox => [...formatBox.querySelectorAll<HTMLElement>('a > span')])
-      .map(els => els.map(el => el.innerText.trim()))
-      .filter(([, price]) => atLeastOneNumberRegex.test(price))
-      .reduce((acc, [key, value]) => ({
-        ...acc,
-        [key as keyof Price]: clearPrice(value),
-      }), {});
+  function createUrl(href: string): string {
+    if (href === 'javascript:void(0)') {
+      return url;
+    }
+
+    return BASE_AMAZON_URL + href;
+  }
+
+  return [...html.querySelectorAll('#formats .format a')]
+      .map(formatEl => {
+        const [format, price] = [...formatEl.querySelectorAll<HTMLElement>(':scope > span')].map(el => el.innerText.trim());
+        return {
+          url: createUrl(formatEl.getAttribute('href')!),
+          format: format as BookFormat,
+          value: clearPrice(price),
+        };
+      })
+      .filter(({value}) => atLeastOneNumberRegex.test(value));
 }
 
 function getFirstSearchResultUrl(html: Document): string | undefined {
