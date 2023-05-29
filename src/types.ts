@@ -7,10 +7,10 @@ export interface Book {
 }
 
 // TODO - does it make sense?
-export type BookFormat = 'Kindle Edition' | 'Hardcover' | 'Audio CD' | 'Audiobook' | 'Paperback' | 'Spiral-bound';
+export type KnownBookFormats = 'Kindle Edition' | 'Hardcover' | 'Audio CD' | 'Audiobook' | 'Paperback' | 'Spiral-bound';
 
 export type Prices = {
-  format: BookFormat,
+  format: string,
   url: string,
   value: string
 }[];

@@ -1,5 +1,5 @@
 import { cachePrice, getCachedPrice } from './cache/cache';
-import { Book, BookFormat, Prices } from './types';
+import { Book, Prices } from './types';
 
 const BASE_AMAZON_URL = 'https://www.amazon.co.uk';
 
@@ -96,7 +96,7 @@ async function retrievePrices(url: string): Promise<Prices | undefined> {
         const [format, price] = [...formatEl.querySelectorAll<HTMLElement>(':scope > span')].map(el => el.innerText.trim());
         return {
           url: createUrl(formatEl.getAttribute('href')!),
-          format: format as BookFormat,
+          format,
           value: clearPrice(price),
         };
       })

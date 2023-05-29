@@ -1,4 +1,13 @@
-import { Book, Prices } from './types';
+import { Book, KnownBookFormats, Prices } from './types';
+
+const FORMAT_PRIORITIES: { [key in KnownBookFormats]: number } = {
+  'Paperback': 1,
+  'Hardcover': 2,
+  'Kindle Edition': 3,
+  'Audiobook': 4,
+  'Audio CD': 5,
+  'Spiral-bound': 6,
+};
 
 const table = document.querySelector('#books')!; // TODO deal with non existing #books
 
@@ -19,6 +28,11 @@ function insertPriceCell(node: HTMLTableRowElement) {
   return node.insertCell(node.childElementCount - 1);
 }
 
+function reorderPrices(prices: Prices): Prices {
+  const getPriority = (key: string) => FORMAT_PRIORITIES[key as KnownBookFormats] || Infinity;
+  return prices.sort((a, b) => getPriority(a.format) - getPriority(b.format));
+}
+
 function handleBookRow(node: HTMLTableRowElement) {
   const price = insertPriceCell(node);
   price.classList.add('field', 'gpf-plugin-price');
@@ -33,6 +47,8 @@ function handleBookRow(node: HTMLTableRowElement) {
   };
 
   chrome.runtime.sendMessage(book, (prices: Prices) => {
+    prices = reorderPrices(prices);
+
     const pricesList = prices.reduce((acc, p) => acc + `<li><a href='${p.url}'><span>${p.value}</span><span>${p.format}</span></a></li>`, '');
     price.innerHTML = `
     <label>price</label>
