@@ -2,6 +2,7 @@ const paths = require('react-scripts/config/paths');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 // Export override function(s) via object
 module.exports = {
@@ -91,6 +92,14 @@ function override(config, env) {
     config.plugins = replacePlugin(config.plugins,
         (name) => /GenerateSW/i.test(name)
     );
+
+    const copyWebpackPlugin = new CopyWebpackPlugin({
+        patterns: [{
+            from: 'node_modules/webextension-polyfill/dist/browser-polyfill.js',
+        }],
+    })
+
+    config.plugins.push(copyWebpackPlugin);
 
     return config;
 }

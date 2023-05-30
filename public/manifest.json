@@ -9,12 +9,14 @@
   ],
   "background": {
     "scripts": [
+      "browser-polyfill.js",
       "static/js/background.js"
     ]
   },
   "content_scripts": [
     {
       "js": [
+        "browser-polyfill.js",
         "static/js/content.js"
       ],
       "css": ["./style.css"],
