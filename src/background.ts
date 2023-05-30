@@ -1,3 +1,4 @@
+import browser from 'webextension-polyfill';
 import { cachePrice, getCachedPrice } from './cache/cache';
 import { Book, Prices } from './types';
 
@@ -8,37 +9,31 @@ const GET_SEARCH_URL = ({author, title}: Book) => {
   return `${BASE_AMAZON_URL}/s/?search-alias=stripbooks&field-author=${encodeURIComponent(author)}&field-title=${encodeURIComponent(title)}`;
 };
 
+browser.runtime.onMessage.addListener(async (book: Book) => {
+  const cached = await getCachedPrice(book);
+  if (cached) {
+    return cached.prices;
+  }
 
-chrome.runtime.onMessage.addListener((book: Book, _, sendResponse) => {
-  (async () => {
-    const cached = await getCachedPrice(book);
-    if (cached) {
-      sendResponse(cached.prices);
-      return;
-    }
+  // TODO
+  // check if request was already made
+  // we want to wait for the first request to finish instead of making another one
 
-    // TODO
-    // check if request was already made
-    // we want to wait for the first request to finish instead of making another one
-
-    try {
-      const price = await findBookPrice(book);
-      if (price) {
-        sendResponse(price);
-        await cachePrice(book, price);
-      } else {
-        // TODO
-        // sendResponse(null);
-      }
-    } catch (e) {
-      console.error('Throttled?');
-      console.error(e);
+  try {
+    const price = await findBookPrice(book);
+    if (price) {
+      await cachePrice(book, price);
+      return price;
+    } else {
       // TODO
-      // sendResponse(null);
+      // return null;
     }
-  })();
-
-  return true; // allow async sendResponse
+  } catch (e) {
+    console.error('Throttled?');
+    console.error(e);
+    // TODO
+    // return null;
+  }
 });
 
 async function findBookPrice(book: Book): Promise<Prices | null> {

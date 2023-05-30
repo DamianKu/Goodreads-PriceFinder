@@ -1,3 +1,4 @@
+import browser from 'webextension-polyfill';
 import { Book, KnownBookFormats, Prices } from './types';
 
 const FORMAT_PRIORITIES: { [key in KnownBookFormats]: number } = {
@@ -46,11 +47,12 @@ function handleBookRow(node: HTMLTableRowElement) {
     isbn13: getBookValue(node, 'isbn13'),
   };
 
-  chrome.runtime.sendMessage(book, (prices: Prices) => {
-    prices = reorderPrices(prices);
+  browser.runtime.sendMessage(book)
+      .then((prices: Prices) => {
+        prices = reorderPrices(prices);
 
-    const pricesList = prices.reduce((acc, p) => acc + `<li><a href='${p.url}'><span>${p.value}</span><span>${p.format}</span></a></li>`, '');
-    price.innerHTML = `
+        const pricesList = prices.reduce((acc, p) => acc + `<li><a href='${p.url}'><span>${p.value}</span><span>${p.format}</span></a></li>`, '');
+        price.innerHTML = `
     <label>price</label>
     <div class="value">
       <div class="gpf-value">
@@ -66,7 +68,7 @@ function handleBookRow(node: HTMLTableRowElement) {
         </div>
       </div>
     </div>`;
-  });
+      });
 }
 
 function getBookValue(node: HTMLElement, key: keyof Book): string | null {
