@@ -1,11 +1,13 @@
+import { v5 } from 'uuid';
 import browser from 'webextension-polyfill';
 import { Book, CacheEntry, Prices } from '../types';
 
-// TODO Increase to what? 3 - 7 days?
-const CACHE_TTL = 24 * 60 * 60 * 1000; //24hours in ms
+const CACHE_TTL = 3 * 24 * 60 * 60 * 1000; //3 days in ms
+
+const CACHE_UUID_NAMESPACE = '1fca440f-5412-4151-8e95-db40ba1c45fe';
 
 function createCacheKey(book: Book): string {
-  return book.asin || book.isbn || book.author + book.title; // use uuid for author and title or for everything?
+  return v5(book.asin || book.isbn || book.author + book.title, CACHE_UUID_NAMESPACE);
 }
 
 export async function cachePrice(book: Book, prices: Prices): Promise<void> {
