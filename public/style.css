@@ -3,6 +3,10 @@
     gap: 8px;
 }
 
+.gpf-value-price-wrapper {
+    display: flex;
+}
+
 .gpf-label {
     cursor: pointer;
     width: 100%;
@@ -65,4 +69,49 @@
 
 .gpf-prices-list li a span:last-of-type {
     font-size: 12px;
+}
+
+[data-gpf-tooltip] {
+    position: relative;
+    cursor: pointer;
+}
+
+[data-gpf-tooltip]:before,
+[data-gpf-tooltip]:after {
+    visibility: hidden;
+    pointer-events: none;
+}
+
+[data-gpf-tooltip]:before {
+    position: absolute;
+    bottom: 150%;
+    left: 50%;
+    margin-bottom: 5px;
+    margin-left: -80px;
+    padding: 8px;
+    width: 160px;
+    border-radius: 4px;
+    background-color: rgba(30, 25, 21, 0.9);
+    color: #fff;
+    content: attr(data-gpf-tooltip);
+    text-align: center;
+}
+
+[data-gpf-tooltip]:after {
+    position: absolute;
+    bottom: 150%;
+    left: 50%;
+    margin-left: -5px;
+    width: 0;
+    border-top: 5px solid rgba(30, 25, 21, 0.9);
+    border-right: 5px solid transparent;
+    border-left: 5px solid transparent;
+    content: " ";
+    font-size: 0;
+    line-height: 0;
+}
+
+[data-gpf-tooltip]:hover:before,
+[data-gpf-tooltip]:hover:after {
+    visibility: visible;
 }

@@ -9,6 +9,7 @@ const FORMAT_PRIORITIES: { [key in KnownBookFormats]: number } = {
   'Audio CD': 5,
   'Spiral-bound': 6,
 };
+const HIGHEST_PRIORITY = Object.entries(FORMAT_PRIORITIES).find(format => format[1] === 1)![0];
 
 const table = document.querySelector('#books')!; // TODO deal with non existing #books
 
@@ -51,12 +52,20 @@ function handleBookRow(node: HTMLTableRowElement) {
       .then((prices: Prices) => {
         prices = reorderPrices(prices);
 
+        let warning;
+        if (prices[0].format !== HIGHEST_PRIORITY) {
+          warning = `<span data-gpf-tooltip='"${HIGHEST_PRIORITY}" is not available. The price shown is for a "${prices[0].format}"'>⚠️</span>`;
+        }
+
         const pricesList = prices.reduce((acc, p) => acc + `<li><a href='${p.url}'><span>${p.value}</span><span>${p.format}</span></a></li>`, '');
         price.innerHTML = `
     <label>price</label>
     <div class="value">
       <div class="gpf-value">
-        <a href="${prices[0].url}">${prices[0].value}</a>
+        <div class="gpf-value-price-wrapper">
+          <a href="${prices[0].url}">${prices[0].value}</a>
+          ${warning ?? ''}
+        </div>
         <label class="gpf-label" for="${book.title}" title="More buy options">&#128722;</label>
       </div>
       <div class="gpf-prices">
