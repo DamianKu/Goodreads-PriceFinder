@@ -11,20 +11,24 @@ const FORMAT_PRIORITIES: { [key in KnownBookFormats]: number } = {
 };
 const HIGHEST_PRIORITY = Object.entries(FORMAT_PRIORITIES).find(format => format[1] === 1)![0];
 
-const table = document.querySelector('#books')!; // TODO deal with non existing #books
+const table = document.querySelector('#books');
+if (table) {
+  // Add "price" header to the `#books` table
+  const priceHeader = insertPriceCell(table.querySelector<HTMLTableRowElement>('#booksHeader')!); // TODO deal with non existing #booksHeader
+  priceHeader.outerHTML = '<th class="header field gpf-plugin-price">price</th>';
 
-const priceHeader = insertPriceCell(table.querySelector<HTMLTableRowElement>('#booksHeader')!); // TODO deal with non existing #booksHeader
-priceHeader.outerHTML = '<th class="header field gpf-plugin-price">price</th>';
+  // Get price for all currently rendered books
+  [...table.querySelectorAll<HTMLTableRowElement>('.bookalike')].forEach(row => handleBookRow(row));
 
-[...table.querySelectorAll<HTMLTableRowElement>('.bookalike')].forEach(row => handleBookRow(row));
+  // Add MutationObserver and get price for all books added to the table by `infinite scroll`
+  new MutationObserver(mutations => {
+    for (let {target, addedNodes: [node]} of mutations) {
+      if ((target as HTMLElement).tagName !== 'TBODY' || node.nodeType !== document.ELEMENT_NODE) continue;
 
-new MutationObserver(mutations => {
-  for (let {target, addedNodes: [node]} of mutations) {
-    if ((target as HTMLElement).tagName !== 'TBODY' || node.nodeType !== document.ELEMENT_NODE) continue;
-
-    handleBookRow(node as HTMLTableRowElement);
-  }
-}).observe(table, {childList: true, subtree: true});
+      handleBookRow(node as HTMLTableRowElement);
+    }
+  }).observe(table, {childList: true, subtree: true});
+}
 
 function insertPriceCell(node: HTMLTableRowElement) {
   return node.insertCell(node.childElementCount - 1);
