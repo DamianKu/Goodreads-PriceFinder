@@ -1,0 +1,72 @@
+:root {
+    --goodreads-colour: #f4f1ea;
+    --main-dark: #d8d8d8;
+}
+
+.root {
+    min-width: 300px;
+}
+
+.formats {
+    background: var(--main-dark);
+    border: 1px solid var(--main-dark);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.formats.dragging .format:not(.chosen-class) {
+    opacity: .4;
+    pointer-events: auto;
+}
+
+.format {
+    cursor: default;
+    user-select: none;
+    background: var(--goodreads-colour);
+    font-size: 14px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    pointer-events: none;
+}
+
+.format:not(:last-child) {
+    border-bottom: 1px solid var(--main-dark);
+}
+
+.format.hidden {
+    text-decoration: line-through;
+    background: var(--main-dark);
+}
+
+.format.hidden span {
+    /*Set opacity on span, instead of the parent element. With opacity on parent, dragged element is visible*/
+    opacity: .4;
+}
+
+.format:not(.hidden):hover {
+    z-index: 2;
+    box-shadow: 0 0 5px 3px var(--main-dark);
+}
+
+.format span {
+    padding: 8px;
+}
+
+.handle {
+    cursor: move;
+    pointer-events: auto;
+}
+
+.drag-class {
+    opacity: 0;
+}
+
+.visibility {
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+
+
