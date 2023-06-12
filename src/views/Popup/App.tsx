@@ -1,3 +1,5 @@
+import { faBars, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState } from 'react';
 import { ItemInterface, ReactSortable, Store } from 'react-sortablejs';
 import { KnownBookFormats } from '../../types';
@@ -25,6 +27,11 @@ function App() {
     setOrder(newOrder);
   };
 
+  const toggleVisibility = (item: ItemInterface) => {
+    const newOrder = [...order].map(f => f.id === item.id ? {...f, visible: !f.visible} : f);
+    setOrder(newOrder);
+  };
+
   return (
       <div className="root">
         <header>
@@ -42,9 +49,15 @@ function App() {
         >
           {order.map((item) => (
               <div className={`format ${item.visible ? '' : 'hidden'}`} key={item.id}>
-                <span className="handle">☰</span>
+                <span className="handle">
+                  <FontAwesomeIcon icon={faBars} />
+                </span>
                 <span>{item.id}</span>
-                <span className="visibility">HIDE/SHOW</span>
+                <span className="visibility" onClick={() => toggleVisibility(item)}>{
+                  item.visible
+                      ? <FontAwesomeIcon icon={faEye} />
+                      : <FontAwesomeIcon icon={faEyeSlash} />
+                }</span>
               </div>
           ))}
         </ReactSortable>
