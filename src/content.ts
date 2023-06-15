@@ -11,8 +11,10 @@ const FORMAT_PRIORITIES: { [key in KnownBookFormats]: number } = {
 };
 const HIGHEST_PRIORITY = Object.entries(FORMAT_PRIORITIES).find(format => format[1] === 1)![0];
 
-const table = document.querySelector('#books');
-if (table) {
+(async () => {
+  const table = document.querySelector('#books');
+  if (!table) return;
+
   // Add "price" header to the `#books` table
   const priceHeader = insertPriceCell(table.querySelector<HTMLTableRowElement>('#booksHeader')!); // TODO deal with non existing #booksHeader
   priceHeader.outerHTML = '<th class="header field gpf-plugin-price">price</th>';
@@ -28,7 +30,7 @@ if (table) {
       handleBookRow(node as HTMLTableRowElement);
     }
   }).observe(table, {childList: true, subtree: true});
-}
+})();
 
 function insertPriceCell(node: HTMLTableRowElement) {
   return node.insertCell(node.childElementCount - 1);
