@@ -1,6 +1,10 @@
 import browser from 'webextension-polyfill';
 import { cachePrice, getCachedPrice } from './cache/cache';
+import store from './state/store';
 import { Book, Prices } from './types';
+import { wrapStore } from 'webext-redux';
+
+wrapStore(store);
 
 const BASE_AMAZON_URL = 'https://www.amazon.co.uk';
 
