@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { KnownBookFormats } from '../types';
 
-export type Order = { id: string, visible: boolean }[];
+export type Order = { id: KnownBookFormats, visible: boolean }[];
 
 export interface State {
   order: Order;
