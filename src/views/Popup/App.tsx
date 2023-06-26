@@ -1,21 +1,14 @@
 import { faBars, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { ItemInterface, ReactSortable, Store } from 'react-sortablejs';
-import { KnownBookFormats } from '../../types';
+import { Order, selectOrder, setNewOrder } from '../../state/orderSlice';
 import './App.css';
 
-const DEFAULT_ORDER: { id: KnownBookFormats, visible: boolean }[] = [
-  {id: 'Paperback', visible: true},
-  {id: 'Hardcover', visible: true},
-  {id: 'Kindle Edition', visible: true},
-  {id: 'Audiobook', visible: true},
-  {id: 'Audio CD', visible: true},
-  {id: 'Spiral-bound', visible: true},
-];
-
 function App() {
-  const [order, setOrder] = useState(DEFAULT_ORDER as ItemInterface[]);
+  const order: Order = useSelector(selectOrder);
+  const dispatch = useDispatch();
   const [isDragging, setIsDragging] = useState(false);
 
   const onSetList = (newOrder: ItemInterface[], _: unknown, {dragging}: Store) => {
@@ -24,12 +17,12 @@ function App() {
     const isSame = newOrder.every((v, i) => v.id === order[i].id);
     if (isSame) return;
 
-    setOrder(newOrder);
+    dispatch(setNewOrder(newOrder as Order));
   };
 
   const toggleVisibility = (item: ItemInterface) => {
     const newOrder = [...order].map(f => f.id === item.id ? {...f, visible: !f.visible} : f);
-    setOrder(newOrder);
+    dispatch(setNewOrder(newOrder));
   };
 
   return (
