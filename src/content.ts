@@ -1,15 +1,16 @@
+import { useSelector } from 'react-redux';
 import browser from 'webextension-polyfill';
-import { Book, KnownBookFormats, Prices } from './types';
+import { Order } from './state/orderSlice';
+import { Book, Prices } from './types';
 
-const FORMAT_PRIORITIES: { [key in KnownBookFormats]: number } = {
-  'Paperback': 1,
-  'Hardcover': 2,
-  'Kindle Edition': 3,
-  'Audiobook': 4,
-  'Audio CD': 5,
-  'Spiral-bound': 6,
-};
-const HIGHEST_PRIORITY = Object.entries(FORMAT_PRIORITIES).find(format => format[1] === 1)![0];
+const FORMAT_PRIORITIES: Order = [
+  {id: 'Paperback', visible: true},
+  {id: 'Hardcover', visible: true},
+  {id: 'Kindle Edition', visible: true},
+  {id: 'Audiobook', visible: true},
+  {id: 'Audio CD', visible: true},
+  {id: 'Spiral-bound', visible: true},
+];
 
 (async () => {
   const table = document.querySelector('#books');
@@ -37,8 +38,20 @@ function insertPriceCell(node: HTMLTableRowElement) {
 }
 
 function reorderPrices(prices: Prices): Prices {
-  const getPriority = (key: string) => FORMAT_PRIORITIES[key as KnownBookFormats] || Infinity;
-  return prices.sort((a, b) => getPriority(a.format) - getPriority(b.format));
+  const getPriority = (key: string) => {
+    const i = FORMAT_PRIORITIES.findIndex(e => e.id === key);
+    return i === -1 ? Infinity : i;
+  };
+
+  // TODO will come from state
+  const FILTER_OUT_NON_DEFINED_FORMATS = true;
+  if (FILTER_OUT_NON_DEFINED_FORMATS) {
+    prices = prices.filter(el => FORMAT_PRIORITIES.find(f => f.id === el.format));
+  }
+
+  prices = prices.sort((a, b) => getPriority(a.format) - getPriority(b.format));
+
+  return prices;
 }
 
 function handleBookRow(node: HTMLTableRowElement) {
@@ -58,9 +71,15 @@ function handleBookRow(node: HTMLTableRowElement) {
       .then((prices: Prices) => {
         prices = reorderPrices(prices);
 
+        if (prices.length === 0) {
+          // TODO
+          price.innerHTML = 'N/A';
+          return;
+        }
+
         let warning;
-        if (prices[0].format !== HIGHEST_PRIORITY) {
-          warning = `<span data-gpf-tooltip='"${HIGHEST_PRIORITY}" is not available. The price shown is for a "${prices[0].format}"'>⚠️</span>`;
+        if (prices[0].format !== FORMAT_PRIORITIES[0].id) {
+          warning = `<span data-gpf-tooltip='"${FORMAT_PRIORITIES[0].id}" is not available. The price shown is for a "${prices[0].format}"'>⚠️</span>`;
         }
 
         const pricesList = prices.reduce((acc, p) => acc + `<li><a href='${p.url}'><span>${p.value}</span><span>${p.format}</span></a></li>`, '');
