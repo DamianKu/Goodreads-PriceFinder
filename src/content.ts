@@ -1,4 +1,3 @@
-import { useSelector } from 'react-redux';
 import browser from 'webextension-polyfill';
 import { Order } from './state/orderSlice';
 import { Book, Prices } from './types';
