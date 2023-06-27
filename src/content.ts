@@ -49,9 +49,7 @@ function reorderPrices(prices: Prices): Prices {
     prices = prices.filter(el => FORMAT_PRIORITIES.find(f => f.id === el.format));
   }
 
-  prices = prices.sort((a, b) => getPriority(a.format) - getPriority(b.format));
-
-  return prices;
+  return prices.sort((a, b) => getPriority(a.format) - getPriority(b.format));
 }
 
 function handleBookRow(node: HTMLTableRowElement) {
