@@ -43,13 +43,13 @@ function App() {
           {order.map((item) => (
               <div className={`format ${item.visible ? '' : 'hidden'}`} key={item.id}>
                 <span className="handle">
-                  <FontAwesomeIcon icon={faBars} />
+                  <FontAwesomeIcon icon={faBars}/>
                 </span>
                 <span>{item.id}</span>
                 <span className="visibility" onClick={() => toggleVisibility(item)}>{
                   item.visible
-                      ? <FontAwesomeIcon icon={faEye} />
-                      : <FontAwesomeIcon icon={faEyeSlash} />
+                      ? <FontAwesomeIcon icon={faEye}/>
+                      : <FontAwesomeIcon icon={faEyeSlash}/>
                 }</span>
               </div>
           ))}

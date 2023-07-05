@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSelector, createSlice } from '@reduxjs/toolkit';
 import { KnownBookFormats } from '../types';
 
 export type Order = { id: KnownBookFormats, visible: boolean }[];
@@ -29,5 +29,10 @@ export const orderSlice = createSlice({
 export const {setNewOrder} = orderSlice.actions;
 
 export const selectOrder = (s: { order: State }) => s.order.order;
+
+export const selectVisibleOrder = createSelector(
+    selectOrder,
+    order => order.filter(el => el.visible),
+);
 
 export default orderSlice.reducer;

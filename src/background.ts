@@ -1,6 +1,6 @@
-import browser from 'webextension-polyfill';
-import { cachePrice, getCachedPrice } from './cache/cache';
-import store from './state/store';
+import { cachePrice, getCachedPrice } from './cache';
+import { addBook, retrievedBookPriceSuccess } from './state/booksSlice';
+import store, { listenerMiddleware } from './state/store';
 import { Book, Prices } from './types';
 import { wrapStore } from 'webext-redux';
 
@@ -13,31 +13,33 @@ const GET_SEARCH_URL = ({author, title}: Book) => {
   return `${BASE_AMAZON_URL}/s/?search-alias=stripbooks&field-author=${encodeURIComponent(author)}&field-title=${encodeURIComponent(title)}`;
 };
 
-browser.runtime.onMessage.addListener(async (book: Book) => {
-  const cached = await getCachedPrice(book);
-  if (cached) {
-    return cached.prices;
-  }
 
-  // TODO
-  // check if request was already made
-  // we want to wait for the first request to finish instead of making another one
-
-  try {
-    const price = await findBookPrice(book);
-    if (price) {
-      await cachePrice(book, price);
-      return price;
-    } else {
-      // TODO
-      // return null;
+listenerMiddleware.startListening({
+  actionCreator: addBook,
+  effect: async ({payload: {id, book}}, listenerApi) => {
+    const cached = await getCachedPrice(id);
+    if (cached) {
+      listenerApi.dispatch(retrievedBookPriceSuccess({id, prices: cached.prices}));
     }
-  } catch (e) {
-    console.error('Throttled?');
-    console.error(e);
+
     // TODO
-    // return null;
-  }
+    // check if request was already made
+    // we want to wait for the first request to finish instead of making another one
+
+    try {
+      const price = await findBookPrice(book);
+      if (price) {
+        await cachePrice(id, book, price);
+        listenerApi.dispatch(retrievedBookPriceSuccess({id, prices: price}));
+      } else {
+        // TODO
+      }
+    } catch (e) {
+      console.error('Throttled?');
+      console.error(e);
+      // TODO
+    }
+  },
 });
 
 async function findBookPrice(book: Book): Promise<Prices | null> {
@@ -83,6 +85,7 @@ async function retrievePrices(url: string): Promise<Prices | undefined> {
   }
 
   function createUrl(href: string): string {
+    // eslint-disable-next-line no-script-url
     if (href === 'javascript:void(0)') {
       return url;
     }
