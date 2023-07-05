@@ -1,10 +1,8 @@
+/*Included in manifest.json*/
+
 .gpf-value {
     display: flex;
     gap: 8px;
-}
-
-.gpf-value-price-wrapper {
-    display: flex;
 }
 
 .gpf-label {
@@ -22,17 +20,13 @@
     overflow: hidden;
 }
 
-.gpf-prices-input {
-    display: none;
-}
-
-.gpf-prices-input:checked ~ .gpf-prices-boxes {
-    max-height: 500px;
-}
-
 .gpf-prices-boxes {
     max-height: 0;
     transition: all 0.3s ease;
+}
+
+.gpf-prices-boxes.expanded {
+    max-height: 500px;
 }
 
 .gpf-prices-list ul {

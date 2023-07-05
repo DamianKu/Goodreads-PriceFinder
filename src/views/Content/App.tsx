@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addBook, selectBook } from '../../state/booksSlice';
 import { Order, selectOrder, selectVisibleOrder } from '../../state/orderSlice';
 import { Book } from '../../types';
+import './App.css';
 
 function getPriority(order: Order, key: string): number {
   const i = order.findIndex(e => e.id === key);
@@ -15,6 +16,7 @@ function App({id, book}: { id: string, book: Book }) {
   const dispatch = useDispatch();
   const bookData = useSelector(selectBook(id));
   const [sortedPrices, setSortedPrices] = useState(bookData?.prices);
+  const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
     dispatch(addBook({id, book}));
@@ -50,15 +52,14 @@ function App({id, book}: { id: string, book: Book }) {
         <label>price</label>
         <div className="value">
           <div className="gpf-value">
-            <div className="gpf-value-price-wrapper">
+            <div>
               <a href={firstPrice.url}>{firstPrice.value}</a>
               {warning ?? ''}
             </div>
-            <label className="gpf-label" htmlFor={book.title} title="More buy options">&#128722;</label>
+            <span className="gpf-label" title="More buy options" onClick={() => setExpanded(!expanded)}>&#128722;</span>
           </div>
           <div className="gpf-prices">
-            <input className="gpf-prices-input" type="checkbox" id={book.title}/>
-            <div className="gpf-prices-boxes">
+            <div className={`gpf-prices-boxes ${expanded ? 'expanded' : ''}`}>
               <div className="gpf-prices-list">
                 <ul>{sortedPrices.map(p => {
                   return <li><a href={p.url}><span>{p.value}</span><span>{p.format}</span></a></li>;

@@ -19,7 +19,7 @@
         "browser-polyfill.js",
         "static/js/content.js"
       ],
-      "css": ["./style.css"],
+      "css": ["./static/css/content.css"],
       "matches": [
         "http://www.goodreads.com/*",
         "https://www.goodreads.com/*"
