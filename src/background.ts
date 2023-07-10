@@ -3,6 +3,7 @@ import { addBook, retrievedBookPriceSuccess } from './state/booksSlice';
 import store, { listenerMiddleware } from './state/store';
 import { Book, Prices } from './types';
 import { wrapStore } from 'webext-redux';
+import { AnyAction, ListenerEffectAPI, ThunkDispatch } from "@reduxjs/toolkit";
 
 wrapStore(store);
 
@@ -13,34 +14,35 @@ const GET_SEARCH_URL = ({author, title}: Book) => {
   return `${BASE_AMAZON_URL}/s/?search-alias=stripbooks&field-author=${encodeURIComponent(author)}&field-title=${encodeURIComponent(title)}`;
 };
 
-
 listenerMiddleware.startListening({
   actionCreator: addBook,
-  effect: async ({payload: {id, book}}, listenerApi) => {
-    const cached = await getCachedPrice(id);
-    if (cached) {
-      listenerApi.dispatch(retrievedBookPriceSuccess({id, prices: cached.prices}));
-    }
+  effect: async ({payload: {id, book}}, listenerApi) => onAddedBook(id, book, listenerApi),
+});
 
-    // TODO
-    // check if request was already made
-    // we want to wait for the first request to finish instead of making another one
+async function onAddedBook(id: string, book: Book, listenerApi: ListenerEffectAPI<unknown, ThunkDispatch<unknown, unknown, AnyAction>>): Promise<void> {
+  const cached = await getCachedPrice(id);
+  if (cached) {
+    listenerApi.dispatch(retrievedBookPriceSuccess({id, prices: cached.prices}));
+  }
 
-    try {
-      const price = await findBookPrice(book);
-      if (price) {
-        await cachePrice(id, book, price);
-        listenerApi.dispatch(retrievedBookPriceSuccess({id, prices: price}));
-      } else {
-        // TODO
-      }
-    } catch (e) {
-      console.error('Throttled?');
-      console.error(e);
+  // TODO
+  // check if request was already made
+  // we want to wait for the first request to finish instead of making another one
+
+  try {
+    const prices = await findBookPrice(book);
+    if (prices) {
+      await cachePrice(id, book, prices);
+      listenerApi.dispatch(retrievedBookPriceSuccess({id, prices}));
+    } else {
       // TODO
     }
-  },
-});
+  } catch (e) {
+    console.error('Throttled?');
+    console.error(e);
+    // TODO
+  }
+}
 
 async function findBookPrice(book: Book): Promise<Prices | null> {
   if (book.asin) {
