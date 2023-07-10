@@ -42,9 +42,9 @@ function App({id, book}: { id: string, book: Book }) {
 
   const firstPrice = sortedPrices[0];
   let warning;
-  if (firstPrice.format !== visibleOrder[0].id) {
+  if (firstPrice.format !== visibleOrder[0]?.id) {
     warning = <span
-        data-gpf-tooltip={`"${visibleOrder[0].id}" is not available. The price shown is for a "${firstPrice.format}"`}>⚠️</span>;
+        data-gpf-tooltip={`"${visibleOrder[0]?.id}" is not available. The price shown is for a "${firstPrice.format}"`}>⚠️</span>;
   }
 
   return (
