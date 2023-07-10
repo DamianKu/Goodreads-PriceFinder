@@ -52,7 +52,7 @@ function App({id, book}: { id: string, book: Book }) {
         <label>price</label>
         <div className="value">
           <div className="gpf-value">
-            <div>
+            <div className="gpf-value-price-wrapper">
               <a href={firstPrice.url}>{firstPrice.value}</a>
               {warning ?? ''}
             </div>

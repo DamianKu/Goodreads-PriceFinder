@@ -5,6 +5,10 @@
     gap: 8px;
 }
 
+.gpf-value-price-wrapper {
+    display: flex;
+}
+
 .gpf-label {
     cursor: pointer;
     width: 100%;
