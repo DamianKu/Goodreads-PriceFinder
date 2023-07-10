@@ -1,4 +1,8 @@
 /*Included in manifest.json*/
+:root {
+    --goodreads-colour: #f1f1e4;
+    --main-dark: #d8d8d8;
+}
 
 .gpf-value {
     display: flex;
@@ -13,8 +17,8 @@
     cursor: pointer;
     width: 100%;
     text-align: center;
-    border: 1px solid #d8d8d8;
-    background: #f4f1ea;
+    border: 1px solid var(--main-dark);
+    background: var(--goodreads-colour);
     border-radius: 4px 4px 0 0;
     margin-bottom: -1px;
     padding: 1px 3px;
@@ -34,8 +38,8 @@
 }
 
 .gpf-prices-list ul {
-    background: #f4f1ea;
-    border: 1px solid #d8d8d8;
+    background: var(--goodreads-colour);
+    border: 1px solid var(--main-dark);
     list-style: none;
     padding-left: 0;
     margin: 0;
@@ -43,7 +47,7 @@
 }
 
 .gpf-prices-list ul li:not(:last-child) {
-    border-bottom: 1px solid #d8d8d8;
+    border-bottom: 1px solid var(--main-dark);
 }
 
 .gpf-prices-list ul li a {
@@ -57,7 +61,7 @@
 }
 
 .gpf-prices-list ul li a:hover {
-    box-shadow: 0 0 5px 3px #d8d8d8;
+    box-shadow: 0 0 5px 3px var(--main-dark);
 }
 
 .gpf-prices-list ul li a span:first-of-type {
