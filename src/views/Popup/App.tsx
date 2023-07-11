@@ -3,13 +3,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ItemInterface, ReactSortable, Store } from 'react-sortablejs';
-import { Order, selectOrder, setNewOrder } from '../../state/orderSlice';
+import {
+  Order,
+  selectOrder,
+  selectShowUnknownFormats,
+  setNewOrder,
+  setShowUnknownFormats
+} from '../../state/orderSlice';
 import './App.css';
 
 function App() {
   const order: Order = useSelector(selectOrder);
   const dispatch = useDispatch();
   const [isDragging, setIsDragging] = useState(false);
+  const showUnknownFormats = useSelector(selectShowUnknownFormats);
 
   const onSetList = (newOrder: ItemInterface[], _: unknown, {dragging}: Store) => {
     if (!dragging) return;
@@ -23,6 +30,10 @@ function App() {
   const toggleVisibility = (item: ItemInterface) => {
     const newOrder = [...order].map(f => f.id === item.id ? {...f, visible: !f.visible} : f);
     dispatch(setNewOrder(newOrder));
+  };
+
+  const toggleShowUnknown = () => {
+    dispatch(setShowUnknownFormats(!showUnknownFormats));
   };
 
   return (
@@ -54,6 +65,13 @@ function App() {
               </div>
           ))}
         </ReactSortable>
+        <div className="divider"/>
+        <div className="unknown_formats">
+          <label>
+            <input type="checkbox" checked={showUnknownFormats} onChange={toggleShowUnknown}/>
+            Show unknown book formats?
+          </label>
+        </div>
       </div>
   );
 }

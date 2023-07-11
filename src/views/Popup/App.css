@@ -69,5 +69,22 @@
     cursor: pointer;
 }
 
+.unknown_formats {
+    display: flex;
+    align-items: center;
+    user-select: none;
+    cursor: pointer;
+}
+
+.unknown_formats input[type="checkbox"] {
+    margin: 4px;
+    cursor: pointer;
+}
+
+.divider { /*Copy what Goodreads is doing :)*/
+    border-bottom: 1px solid var(--main-dark);
+    margin: 0.5em 0;
+}
+
 
 
