@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addBook, selectBook } from '../../state/booksSlice';
-import { Order, selectOrder, selectVisibleOrder } from '../../state/orderSlice';
+import { Order, selectOrder, selectShowUnknownFormats, selectVisibleOrder } from '../../state/orderSlice';
 import { Book } from '../../types';
 import './App.css';
 
@@ -17,6 +17,7 @@ function App({id, book}: { id: string, book: Book }) {
   const bookData = useSelector(selectBook(id));
   const [sortedPrices, setSortedPrices] = useState(bookData?.prices);
   const [expanded, setExpanded] = useState(false);
+  const showUnknownFormats = useSelector(selectShowUnknownFormats);
 
   useEffect(() => {
     dispatch(addBook({id, book}));
@@ -25,12 +26,15 @@ function App({id, book}: { id: string, book: Book }) {
   useEffect(() => {
     if (bookData?.prices) {
       const prices = bookData.prices
-          .filter(el => order.find(f => f.id === el.format)?.visible)
+          .filter(el => {
+            const format = order.find(f => f.id === el.format);
+            return format === undefined && showUnknownFormats ? true : format?.visible;
+          })
           .sort((a, b) => getPriority(visibleOrder, a.format) - getPriority(visibleOrder, b.format))
 
       setSortedPrices(prices);
     }
-  }, [bookData, order, visibleOrder]);
+  }, [bookData, order, visibleOrder, showUnknownFormats]);
 
   if (!bookData || bookData.loading) {
     return (<span>...</span>);
