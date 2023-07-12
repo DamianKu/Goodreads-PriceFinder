@@ -2,6 +2,7 @@
 :root {
     --goodreads-colour: #f1f1e4;
     --main-dark: #d8d8d8;
+    --secondary-dark: #b7ad98;
 }
 
 .gpf-value {
@@ -116,4 +117,24 @@
 [data-gpf-tooltip]:hover:before,
 [data-gpf-tooltip]:hover:after {
     visibility: visible;
+}
+
+.loader {
+    width: 16px;
+    height: 16px;
+    border: 3px solid var(--goodreads-colour);
+    border-bottom-color: var(--secondary-dark);
+    border-radius: 50%;
+    display: flex;
+    animation: rotation 1s linear infinite;
+    margin: 0 auto;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }

@@ -37,11 +37,11 @@ function App({id, book}: { id: string, book: Book }) {
   }, [bookData, order, visibleOrder, showUnknownFormats]);
 
   if (!bookData || bookData.loading) {
-    return (<span>...</span>);
+    return (<span className="loader"></span>);
   }
 
   if (!sortedPrices || sortedPrices.length === 0) {
-    return (<span>N/A</span>);
+    return (<span>Not found</span>);
   }
 
   const firstPrice = sortedPrices[0];
