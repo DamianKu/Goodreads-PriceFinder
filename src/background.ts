@@ -1,11 +1,8 @@
 import { cachePrice, getCachedPrice } from './cache';
 import { addBook, retrievedBookPriceSuccess } from './state/booksSlice';
-import store, { listenerMiddleware } from './state/store';
+import { listenerMiddleware } from './state/store';
 import { Book, Prices } from './types';
-import { wrapStore } from 'webext-redux';
 import { AnyAction, ListenerEffectAPI, ThunkDispatch } from "@reduxjs/toolkit";
-
-wrapStore(store);
 
 const BASE_AMAZON_URL = 'https://www.amazon.co.uk';
 
