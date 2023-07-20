@@ -26,6 +26,12 @@ export const booksSlice = createSlice({
         prices: null,
       };
     },
+    retrieveBookPrice: (state, action: { type: string, payload: { id: string, book: Book } }) => {
+      state.books[action.payload.id] = {
+        ...state.books[action.payload.id],
+        loading: true,
+      }
+    },
     retrievedBookPriceSuccess: (state, action: { type: string, payload: { id: string, prices: Prices } }) => {
       state.books[action.payload.id] = {
         ...state.books[action.payload.id],
@@ -44,7 +50,7 @@ export const booksSlice = createSlice({
   },
 });
 
-export const {addBook, retrievedBookPriceSuccess, retrievedBookPriceError} = booksSlice.actions;
+export const {addBook, retrievedBookPriceSuccess, retrievedBookPriceError, retrieveBookPrice} = booksSlice.actions;
 
 export const selectBook = (id: string) => (store: { books: State }) => {
   return store.books.books[id];

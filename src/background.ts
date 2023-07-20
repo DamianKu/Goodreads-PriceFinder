@@ -1,5 +1,5 @@
 import { cachePrice, getCachedPrice } from './cache';
-import { addBook, retrievedBookPriceSuccess } from './state/booksSlice';
+import { addBook, retrieveBookPrice, retrievedBookPriceError, retrievedBookPriceSuccess } from './state/booksSlice';
 import { listenerMiddleware } from './state/store';
 import { Book, Prices } from './types';
 import { AnyAction, ListenerEffectAPI, ThunkDispatch } from "@reduxjs/toolkit";
@@ -16,10 +16,21 @@ listenerMiddleware.startListening({
   effect: async ({payload: {id, book}}, listenerApi) => onAddedBook(id, book, listenerApi),
 });
 
+listenerMiddleware.startListening({
+  actionCreator: retrieveBookPrice,
+  effect: async ({payload: {id, book}}, listenerApi) => onRetrieveBookPrice(id, book, listenerApi),
+})
+
 async function onAddedBook(id: string, book: Book, listenerApi: ListenerEffectAPI<unknown, ThunkDispatch<unknown, unknown, AnyAction>>): Promise<void> {
+  listenerApi.dispatch(retrieveBookPrice({id, book}));
+}
+
+async function onRetrieveBookPrice(id: string, book: Book, listenerApi: ListenerEffectAPI<unknown, ThunkDispatch<unknown, unknown, AnyAction>>): Promise<void> {
+  console.log('onRetrieveBookPrice', book);
   const cached = await getCachedPrice(id);
   if (cached) {
     listenerApi.dispatch(retrievedBookPriceSuccess({id, prices: cached.prices}));
+    return;
   }
 
   // TODO
@@ -31,13 +42,14 @@ async function onAddedBook(id: string, book: Book, listenerApi: ListenerEffectAP
     if (prices) {
       await cachePrice(id, book, prices);
       listenerApi.dispatch(retrievedBookPriceSuccess({id, prices}));
+      return;
     } else {
-      // TODO
+      listenerApi.dispatch(retrievedBookPriceSuccess({id, prices: []}))
+      return;
     }
   } catch (e) {
-    console.error('Throttled?');
     console.error(e);
-    // TODO
+    listenerApi.dispatch(retrievedBookPriceError({id, error: e.message}))
   }
 }
 
@@ -69,7 +81,6 @@ async function findBookPrice(book: Book): Promise<Prices | null> {
     }
   }
 
-  // TODO
   return null;
 }
 

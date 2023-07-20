@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addBook, selectBook } from '../../state/booksSlice';
+import { addBook, retrieveBookPrice, selectBook } from '../../state/booksSlice';
 import { Order, selectOrder, selectShowUnknownFormats, selectVisibleOrder } from '../../state/orderSlice';
 import { Book } from '../../types';
 import './App.css';
@@ -38,6 +38,13 @@ function App({id, book}: { id: string, book: Book }) {
 
   if (!bookData || bookData.loading) {
     return (<span className="loader"></span>);
+  }
+
+  if (bookData.error) {
+    return (
+        <span data-gpf-tooltip={`"${bookData.error}". Click to retry`}
+              onClick={() => dispatch(retrieveBookPrice({id, book}))}>🚩</span>
+    )
   }
 
   if (!sortedPrices || sortedPrices.length === 0) {
