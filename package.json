@@ -5,6 +5,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-app-rewired build",
+    "build:watch": "nodemon --watch ./src -e \"*\" --exec \"npm run build\"",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },
@@ -46,6 +47,7 @@
     "@types/uuid": "^9.0.1",
     "@types/webextension-polyfill": "^0.10.0",
     "copy-webpack-plugin": "^11.0.0",
+    "nodemon": "^3.0.1",
     "react": "^18.2.0",
     "react-app-rewired": "^2.2.1",
     "react-dom": "^18.2.0",
