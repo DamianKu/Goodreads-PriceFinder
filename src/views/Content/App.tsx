@@ -64,7 +64,7 @@ function App({id, book}: { id: string, book: Book }) {
         <div className="value">
           <div className="gpf-value">
             <div className="gpf-value-price-wrapper">
-              <a href={firstPrice.url}>{firstPrice.value}</a>
+              <a href={firstPrice.url} target="_blank" rel="noopener noreferrer">{firstPrice.value}</a>
               {warning ?? ''}
             </div>
             <span className="gpf-label" title="More buy options" onClick={() => setExpanded(!expanded)}>&#128722;</span>
@@ -73,7 +73,7 @@ function App({id, book}: { id: string, book: Book }) {
             <div className={`gpf-prices-boxes ${expanded ? 'expanded' : ''}`}>
               <div className="gpf-prices-list">
                 <ul>{sortedPrices.map(p => {
-                  return <li><a href={p.url}><span>{p.value}</span><span>{p.format}</span></a></li>;
+                  return <li><a href={p.url} target="_blank" rel="noopener noreferrer"><span>{p.value}</span><span>{p.format}</span></a></li>;
                 })}</ul>
               </div>
             </div>
