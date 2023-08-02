@@ -1,0 +1,40 @@
+{
+  "manifest_version": 3,
+  "name": "Goodreads PriceFinder",
+  "version": "0.1",
+  "description": "Some Description",
+  "permissions": [
+    "storage"
+  ],
+  "background": {
+    "service_worker": "static/js/background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "js": [
+        "browser-polyfill.js",
+        "static/js/content.js"
+      ],
+      "css": ["./static/css/content.css"],
+      "matches": [
+        "http://www.goodreads.com/*",
+        "https://www.goodreads.com/*"
+      ]
+    }
+  ],
+  "icons": {
+    "192": "logo192.png"
+  },
+  "action": {
+    "default_icon": {
+      "192": "logo192.png"
+    },
+    "default_title": "Popup",
+    "default_popup": "popup.html"
+  },
+  "content_security_policy": {},
+  "host_permissions": [
+    "*://*/*"
+  ]
+}

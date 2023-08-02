@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-app-rewired build",
+    "build": "npm run build:chrome && npm run build:firefox",
+    "build:chrome": "set TARGET_BROWSER=chrome&& react-app-rewired build",
+    "build:firefox": "set TARGET_BROWSER=firefox&& react-app-rewired build",
     "build:watch": "nodemon --watch ./src -e \"*\" --exec \"npm run build\"",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject"

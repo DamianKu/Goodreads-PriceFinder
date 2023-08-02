@@ -3,9 +3,15 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const path = require("path");
+const TARGET_BROWSER = process.env.TARGET_BROWSER;
 
 // Export override function(s) via object
 module.exports = {
+    paths: (paths, env) => {
+        paths.appBuild = path.resolve(__dirname, path.join("builds", TARGET_BROWSER));
+        return paths;
+    },
     webpack: override,
     // You may also override the Jest config (used for tests) by adding property with 'jest' name below. See react-app-rewired library's docs for details
 };
@@ -83,6 +89,9 @@ function override(config, env) {
     const copyWebpackPlugin = new CopyWebpackPlugin({
         patterns: [{
             from: 'node_modules/webextension-polyfill/dist/browser-polyfill.js',
+        }, {
+            from: `manifest/manifest_${TARGET_BROWSER}.json`,
+            to: 'manifest.json'
         }],
     })
 
