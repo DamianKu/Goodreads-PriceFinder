@@ -3,6 +3,7 @@ import { addBook, retrieveBookPrice, retrievedBookPriceError, retrievedBookPrice
 import { listenerMiddleware } from './state/store';
 import { Book, Prices } from './types';
 import { AnyAction, ListenerEffectAPI, ThunkDispatch } from "@reduxjs/toolkit";
+import { parse, HTMLElement } from 'node-html-parser';
 
 const BASE_AMAZON_URL = 'https://www.amazon.co.uk';
 
@@ -105,7 +106,7 @@ async function retrievePrices(url: string): Promise<Prices | undefined> {
 
   return [...html.querySelectorAll('#formats .format a')]
       .map(formatEl => {
-        const [format, price] = [...formatEl.querySelectorAll<HTMLElement>(':scope > span')].map(el => el.innerText.trim());
+        const [format, price] = [...formatEl.querySelectorAll(':scope > span')].map(el => el.innerText.trim());
         return {
           url: createUrl(formatEl.getAttribute('href')!),
           format,
@@ -115,18 +116,18 @@ async function retrievePrices(url: string): Promise<Prices | undefined> {
       .filter(({value}) => atLeastOneNumberRegex.test(value));
 }
 
-function getFirstSearchResultUrl(html: Document): string | undefined {
-  const url = [...html.querySelectorAll<HTMLAnchorElement>('.s-result-list .s-link-style')]
+function getFirstSearchResultUrl(html: HTMLElement): string | undefined {
+  const url = [...html.querySelectorAll('.s-result-list .s-link-style')]
       .find(el => !el.querySelector('span .rush-component'))
       ?.getAttribute('href');
 
   return url ? BASE_AMAZON_URL + url : undefined;
 }
 
-async function fetchHtml(url: string): Promise<Document> {
+async function fetchHtml(url: string): Promise<HTMLElement> {
   const response = await fetch(url);
   const html = await response.text();
-  const parsed = new DOMParser().parseFromString(html, 'text/html');
+  const parsed = parse(html)
 
   if (parsed.querySelector('#captchacharacters')) {
     throw new Error('Throttling error');
