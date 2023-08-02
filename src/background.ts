@@ -27,7 +27,6 @@ async function onAddedBook(id: string, book: Book, listenerApi: ListenerEffectAP
 }
 
 async function onRetrieveBookPrice(id: string, book: Book, listenerApi: ListenerEffectAPI<unknown, ThunkDispatch<unknown, unknown, AnyAction>>): Promise<void> {
-  console.log('onRetrieveBookPrice', book);
   const cached = await getCachedPrice(id);
   if (cached) {
     listenerApi.dispatch(retrievedBookPriceSuccess({id, prices: cached.prices}));

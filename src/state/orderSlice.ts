@@ -33,7 +33,7 @@ export const orderSlice = createSlice({
 
 export const {setNewOrder, setShowUnknownFormats} = orderSlice.actions;
 
-export const selectOrder = (s: { order: State }) => s.order.order;
+export const selectOrder = (s: { order: State }) => s.order?.order;
 
 export const selectVisibleOrder = createSelector(
     selectOrder,
