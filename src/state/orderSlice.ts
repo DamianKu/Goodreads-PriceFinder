@@ -37,7 +37,7 @@ export const selectOrder = (s: { order: State }) => s.order?.order;
 
 export const selectVisibleOrder = createSelector(
     selectOrder,
-    order => order.filter(el => el.visible),
+    order => (order || []).filter(el => el.visible)
 );
 
 export const selectShowUnknownFormats = (s: { order: State }) => s.order.showUnknownFormats;

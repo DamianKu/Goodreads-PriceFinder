@@ -53,7 +53,7 @@ export const booksSlice = createSlice({
 export const {addBook, retrievedBookPriceSuccess, retrievedBookPriceError, retrieveBookPrice} = booksSlice.actions;
 
 export const selectBook = (id: string) => (store: { books: State }) => {
-  return store.books.books[id];
+  return store.books?.books[id];
 };
 
 export default booksSlice.reducer;
