@@ -88,7 +88,7 @@ async function retrievePrices(url: string): Promise<Prices | undefined> {
   const atLeastOneNumberRegex = /\d/;
   const html = await fetchHtml(url);
 
-  function clearPrice(price: string): string {
+  function clearValue(price: string): string {
     return price
         .replace(/from /, '') // Some prices contain word "from £xx.xx"
         .replace(/\s.*/g, ''); // Sometimes retrieved HTML with price will contain extra styling
@@ -108,8 +108,8 @@ async function retrievePrices(url: string): Promise<Prices | undefined> {
         const [format, price] = [...formatEl.querySelectorAll(':scope > span')].map(el => el.innerText.trim());
         return {
           url: createUrl(formatEl.getAttribute('href')!),
-          format,
-          value: clearPrice(price),
+          format: clearValue(format),
+          value: clearValue(price),
         };
       })
       .filter(({value}) => atLeastOneNumberRegex.test(value));
