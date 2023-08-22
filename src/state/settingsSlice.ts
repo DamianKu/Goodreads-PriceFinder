@@ -8,19 +8,21 @@ export interface State {
   showUnknownFormats: boolean;
 }
 
+const initialState: State = {
+  order: [
+    {id: 'Paperback', visible: true},
+    {id: 'Hardcover', visible: true},
+    {id: 'Kindle', visible: true},
+    {id: 'Audiobook', visible: true},
+    {id: 'Audio CD', visible: true},
+    {id: 'Spiral-bound', visible: true},
+  ],
+  showUnknownFormats: true,
+}
+
 export const settingsSlice = createSlice({
   name: 'settings',
-  initialState: {
-    order: [
-      {id: 'Paperback', visible: true},
-      {id: 'Hardcover', visible: true},
-      {id: 'Kindle Edition', visible: true},
-      {id: 'Audiobook', visible: true},
-      {id: 'Audio CD', visible: true},
-      {id: 'Spiral-bound', visible: true},
-    ],
-    showUnknownFormats: true,
-  } as State,
+  initialState,
   reducers: {
     setNewOrder: (state, action: { type: string, payload: Order }) => {
       state.order = action.payload;
