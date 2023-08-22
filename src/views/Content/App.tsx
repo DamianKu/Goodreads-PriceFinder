@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addBook, retrieveBookPrice, selectBook } from '../../state/booksSlice';
-import { Order, selectOrder, selectShowUnknownFormats, selectVisibleOrder } from '../../state/orderSlice';
+import { Order, selectOrder, selectShowUnknownFormats, selectVisibleOrder } from '../../state/settingsSlice';
 import { Book } from '../../types';
 import './App.css';
 

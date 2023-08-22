@@ -8,8 +8,8 @@ export interface State {
   showUnknownFormats: boolean;
 }
 
-export const orderSlice = createSlice({
-  name: 'order',
+export const settingsSlice = createSlice({
+  name: 'settings',
   initialState: {
     order: [
       {id: 'Paperback', visible: true},
@@ -31,15 +31,15 @@ export const orderSlice = createSlice({
   },
 });
 
-export const {setNewOrder, setShowUnknownFormats} = orderSlice.actions;
+export const {setNewOrder, setShowUnknownFormats} = settingsSlice.actions;
 
-export const selectOrder = (s: { order: State }) => s.order?.order;
+export const selectOrder = ({settings}: { settings: State }) => settings.order;
 
 export const selectVisibleOrder = createSelector(
     selectOrder,
-    order => (order || []).filter(el => el.visible)
+    order => order.filter(el => el.visible)
 );
 
-export const selectShowUnknownFormats = (s: { order: State }) => s.order.showUnknownFormats;
+export const selectShowUnknownFormats = ({settings}: { settings: State }) => settings.showUnknownFormats;
 
-export default orderSlice.reducer;
+export default settingsSlice.reducer;

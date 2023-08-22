@@ -9,7 +9,7 @@ import {
   selectShowUnknownFormats,
   setNewOrder,
   setShowUnknownFormats
-} from '../../state/orderSlice';
+} from '../../state/settingsSlice';
 import './App.css';
 
 function App() {
