@@ -4,7 +4,7 @@
   "version": "0.1",
   "description": "Some Description",
   "permissions": [
-    "*://*/*",
+    "https://www.amazon.co.uk/*",
     "storage"
   ],
   "background": {

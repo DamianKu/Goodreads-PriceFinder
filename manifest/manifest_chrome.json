@@ -35,6 +35,6 @@
   },
   "content_security_policy": {},
   "host_permissions": [
-    "*://*/*"
+    "https://www.amazon.co.uk/*"
   ]
 }
