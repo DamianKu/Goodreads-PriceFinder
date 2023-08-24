@@ -5,6 +5,7 @@
   "description": "Some Description",
   "permissions": [
     "https://www.amazon.co.uk/*",
+    "https://www.amazon.com/*",
     "storage"
   ],
   "background": {
