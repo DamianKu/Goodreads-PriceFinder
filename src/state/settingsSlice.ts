@@ -1,11 +1,13 @@
 import { createSelector, createSlice } from '@reduxjs/toolkit';
-import { KnownBookFormats } from '../types';
+import { Domain, KnownBookFormats } from '../types';
+import { domains } from "../domains";
 
 export type Order = { id: KnownBookFormats, visible: boolean }[];
 
 export interface State {
   order: Order;
   showUnknownFormats: boolean;
+  domain: Domain,
 }
 
 const initialState: State = {
@@ -18,6 +20,7 @@ const initialState: State = {
     {id: 'Spiral-bound', visible: true},
   ],
   showUnknownFormats: true,
+  domain: domains[0],
 }
 
 export const settingsSlice = createSlice({
@@ -29,11 +32,14 @@ export const settingsSlice = createSlice({
     },
     setShowUnknownFormats: (state, action: { type: string, payload: boolean }) => {
       state.showUnknownFormats = action.payload;
+    },
+    setDomain: (state, action: { type: string, payload: Domain }) => {
+      state.domain = action.payload;
     }
   },
 });
 
-export const {setNewOrder, setShowUnknownFormats} = settingsSlice.actions;
+export const {setNewOrder, setShowUnknownFormats, setDomain} = settingsSlice.actions;
 
 export const selectOrder = ({settings}: { settings: State }) => settings.order;
 
@@ -43,5 +49,7 @@ export const selectVisibleOrder = createSelector(
 );
 
 export const selectShowUnknownFormats = ({settings}: { settings: State }) => settings.showUnknownFormats;
+
+export const selectDomain = ({settings}: { settings: State }) => settings.domain;
 
 export default settingsSlice.reducer;
