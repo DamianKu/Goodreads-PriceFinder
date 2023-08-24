@@ -4,7 +4,6 @@ import { Store } from 'webext-redux';
 import { Book } from './types';
 import App from './views/Content/App';
 import React from 'react';
-import { createBookId } from "./id";
 
 const store = new Store();
 Object.assign(store, {
