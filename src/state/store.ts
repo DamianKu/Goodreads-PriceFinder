@@ -1,6 +1,6 @@
 import { combineReducers, configureStore, createListenerMiddleware } from '@reduxjs/toolkit';
-import settingsReducer from './settingsSlice';
-import booksReducer from './booksSlice';
+import settingsReducer, { State as SettingsState } from './settingsSlice';
+import booksReducer, { State as BooksState } from './booksSlice';
 import { localStorage } from "redux-persist-webextension-storage";
 import { persistStore, persistReducer } from 'redux-persist'
 import { wrapStore } from "webext-redux";
@@ -17,6 +17,10 @@ const rootReducer = combineReducers({
   books: booksReducer
 })
 
+export type StoreState = {
+  settings: SettingsState,
+  books: BooksState
+}
 export const store = configureStore({
   reducer: rootReducer,
   middleware: getDefaultMiddleware => getDefaultMiddleware()
