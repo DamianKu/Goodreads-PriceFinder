@@ -8,6 +8,10 @@
     font-family: "Lato", Arial, sans-serif;
 }
 
+.domain :is(span, select, option) {
+    font-size: 16px;
+}
+
 .formats {
     background: var(--main-dark);
     border: 1px solid var(--main-dark);

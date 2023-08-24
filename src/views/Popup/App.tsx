@@ -4,19 +4,23 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ItemInterface, ReactSortable, Store } from 'react-sortablejs';
 import {
-  Order,
+  Order, selectDomain,
   selectOrder,
   selectShowUnknownFormats,
   setNewOrder,
-  setShowUnknownFormats
+  setShowUnknownFormats,
+  setDomain
 } from '../../state/settingsSlice';
 import './App.css';
+import { domains } from "../../domains";
+import { Domain } from "../../types";
 
 function App() {
   const order: Order = useSelector(selectOrder);
   const dispatch = useDispatch();
   const [isDragging, setIsDragging] = useState(false);
   const showUnknownFormats = useSelector(selectShowUnknownFormats);
+  const domain = useSelector(selectDomain);
 
   const onSetList = (newOrder: ItemInterface[], _: unknown, {dragging}: Store) => {
     if (!dragging) return;
@@ -41,6 +45,19 @@ function App() {
         <header>
           <h1 draggable="true">Goodreads PriceFinder</h1>
         </header>
+
+        <div className="domain">
+          <h2>Domain</h2>
+          <span>amazon.</span>
+          <select value={domain} onChange={e => dispatch(setDomain(e.target.value as Domain))}>
+            {domains.map(option => (
+                <option value={option}>{option}</option>
+            ))}
+          </select>
+        </div>
+        <div className="divider"/>
+
+        <h2>Order</h2>
         <ReactSortable handle=".handle"
                        chosenClass="chosen-class"
                        dragClass="drag-class"
