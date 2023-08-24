@@ -1,16 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addBook, retrieveBookPrice, selectBook } from '../../state/booksSlice';
-import { Order, selectOrder, selectShowUnknownFormats, selectVisibleOrder } from '../../state/settingsSlice';
+import {
+  Order,
+  selectDomain,
+  selectOrder,
+  selectShowUnknownFormats,
+  selectVisibleOrder
+} from '../../state/settingsSlice';
 import { Book } from '../../types';
 import './App.css';
+import { createBookId } from "../../id";
 
 function getPriority(order: Order, key: string): number {
   const i = order.findIndex(e => e.id === key);
   return i === -1 ? Infinity : i;
 }
 
-function App({id, book}: { id: string, book: Book }) {
+function App({book}: { book: Book }) {
+  const domain = useSelector(selectDomain);
+  const [id, setId] = useState(createBookId(book, domain));
   const order: Order = useSelector(selectOrder);
   const visibleOrder: Order = useSelector(selectVisibleOrder);
   const dispatch = useDispatch();
@@ -18,6 +27,10 @@ function App({id, book}: { id: string, book: Book }) {
   const [sortedPrices, setSortedPrices] = useState(bookData?.prices);
   const [expanded, setExpanded] = useState(false);
   const showUnknownFormats = useSelector(selectShowUnknownFormats);
+
+  useEffect(() => {
+    setId(createBookId(book, domain));
+  }, [domain, book]);
 
   useEffect(() => {
     dispatch(addBook({id, book}));
@@ -73,7 +86,8 @@ function App({id, book}: { id: string, book: Book }) {
             <div className={`gpf-prices-boxes ${expanded ? 'expanded' : ''}`}>
               <div className="gpf-prices-list">
                 <ul>{sortedPrices.map(p => {
-                  return <li><a href={p.url} target="_blank" rel="noopener noreferrer"><span>{p.value}</span><span>{p.format}</span></a></li>;
+                  return <li><a href={p.url} target="_blank"
+                                rel="noopener noreferrer"><span>{p.value}</span><span>{p.format}</span></a></li>;
                 })}</ul>
               </div>
             </div>

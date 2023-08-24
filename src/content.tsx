@@ -55,7 +55,7 @@ function handleBookRow(node: HTMLTableRowElement) {
   ReactDOM.render(
       <React.StrictMode>
         <Provider store={store}>
-          <App id={createBookId(book)} book={book}/>
+          <App book={book}/>
         </Provider>
       </React.StrictMode>,
       price,
