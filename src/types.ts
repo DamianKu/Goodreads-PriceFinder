@@ -1,3 +1,5 @@
+import { domains } from "./domains";
+
 export interface Book {
   asin: string | null;
   isbn: string | null;
@@ -20,3 +22,5 @@ export interface CacheEntry {
   prices: Prices,
   cachedAt: number,
 }
+
+export type Domain = typeof domains[number];
