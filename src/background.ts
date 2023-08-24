@@ -1,15 +1,14 @@
 import { cachePrice, getCachedPrice } from './cache';
 import { addBook, retrieveBookPrice, retrievedBookPriceError, retrievedBookPriceSuccess } from './state/booksSlice';
-import { listenerMiddleware } from './state/store';
-import { Book, Prices } from './types';
+import { listenerMiddleware, StoreState } from './state/store';
+import { Book, Domain, Prices } from './types';
 import { AnyAction, ListenerEffectAPI, ThunkDispatch } from "@reduxjs/toolkit";
 import { parse, HTMLElement } from 'node-html-parser';
 
-const BASE_AMAZON_URL = 'https://www.amazon.co.uk';
-
-const GET_PRODUCT_URL = (id: string) => `${BASE_AMAZON_URL}/dp/${id}`;
-const GET_SEARCH_URL = ({author, title}: Book) => {
-  return `${BASE_AMAZON_URL}/s/?search-alias=stripbooks&field-author=${encodeURIComponent(author)}&field-title=${encodeURIComponent(title)}`;
+const GET_AMAZON_URL = (domain: Domain) => 'https://www.amazon.' + domain
+const GET_PRODUCT_URL = (id: string, domain: Domain) => `${GET_AMAZON_URL(domain)}/dp/${id}`;
+const GET_SEARCH_URL = ({author, title}: Book, domain: Domain,) => {
+  return `${GET_AMAZON_URL(domain)}/s/?search-alias=stripbooks&field-author=${encodeURIComponent(author)}&field-title=${encodeURIComponent(title)}`;
 };
 
 listenerMiddleware.startListening({
@@ -27,6 +26,8 @@ async function onAddedBook(id: string, book: Book, listenerApi: ListenerEffectAP
 }
 
 async function onRetrieveBookPrice(id: string, book: Book, listenerApi: ListenerEffectAPI<unknown, ThunkDispatch<unknown, unknown, AnyAction>>): Promise<void> {
+  const {settings: {domain}}: StoreState = listenerApi.getState() as StoreState;
+
   const cached = await getCachedPrice(id);
   if (cached) {
     listenerApi.dispatch(retrievedBookPriceSuccess({id, prices: cached.prices}));
@@ -38,7 +39,7 @@ async function onRetrieveBookPrice(id: string, book: Book, listenerApi: Listener
   // we want to wait for the first request to finish instead of making another one
 
   try {
-    const prices = await findBookPrice(book);
+    const prices = await findBookPrice(book, domain);
     if (prices) {
       await cachePrice(id, book, prices);
       listenerApi.dispatch(retrievedBookPriceSuccess({id, prices}));
@@ -53,9 +54,9 @@ async function onRetrieveBookPrice(id: string, book: Book, listenerApi: Listener
   }
 }
 
-async function findBookPrice(book: Book): Promise<Prices | null> {
+async function findBookPrice(book: Book, domain: Domain): Promise<Prices | null> {
   if (book.asin) {
-    const price = await retrievePrices(GET_PRODUCT_URL(book.asin));
+    const price = await retrievePrices(GET_PRODUCT_URL(book.asin, domain), domain);
     if (price?.length) {
       return price;
     }
@@ -63,7 +64,7 @@ async function findBookPrice(book: Book): Promise<Prices | null> {
 
   // Sometimes isbn is the same as asin, in that case do not make this request
   if (book.isbn && book.isbn !== book.asin) {
-    const price = await retrievePrices(GET_PRODUCT_URL(book.isbn));
+    const price = await retrievePrices(GET_PRODUCT_URL(book.isbn, domain), domain);
     if (price?.length) {
       return price;
     }
@@ -71,11 +72,11 @@ async function findBookPrice(book: Book): Promise<Prices | null> {
 
   // No valid price found by ASIN or ISBN
   // Perform search
-  const searchHtml = await fetchHtml(GET_SEARCH_URL(book));
-  const firstBookUrl = getFirstSearchResultUrl(searchHtml);
+  const searchHtml = await fetchHtml(GET_SEARCH_URL(book, domain));
+  const firstBookUrl = getFirstSearchResultUrl(searchHtml, domain);
 
   if (firstBookUrl) {
-    const price = await retrievePrices(firstBookUrl);
+    const price = await retrievePrices(firstBookUrl, domain);
     if (price?.length) {
       return price;
     }
@@ -84,7 +85,7 @@ async function findBookPrice(book: Book): Promise<Prices | null> {
   return null;
 }
 
-async function retrievePrices(url: string): Promise<Prices | undefined> {
+async function retrievePrices(url: string, domain: Domain): Promise<Prices | undefined> {
   const atLeastOneNumberRegex = /\d/;
   const html = await fetchHtml(url);
 
@@ -100,7 +101,7 @@ async function retrievePrices(url: string): Promise<Prices | undefined> {
       return url;
     }
 
-    return BASE_AMAZON_URL + href;
+    return GET_AMAZON_URL(domain) + href;
   }
 
   return [...html.querySelectorAll('#formats .format a')]
@@ -115,12 +116,12 @@ async function retrievePrices(url: string): Promise<Prices | undefined> {
       .filter(({value}) => atLeastOneNumberRegex.test(value));
 }
 
-function getFirstSearchResultUrl(html: HTMLElement): string | undefined {
+function getFirstSearchResultUrl(html: HTMLElement, domain: Domain): string | undefined {
   const url = [...html.querySelectorAll('.s-result-list .s-link-style')]
       .find(el => !el.querySelector('span .rush-component'))
       ?.getAttribute('href');
 
-  return url ? BASE_AMAZON_URL + url : undefined;
+  return url ? GET_AMAZON_URL(domain) + url : undefined;
 }
 
 async function fetchHtml(url: string): Promise<HTMLElement> {
